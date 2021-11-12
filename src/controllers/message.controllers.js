@@ -1,12 +1,4 @@
-const express = require('express');
-const app = express();
-const PORT = 8080;
-
-app.use(express.json());
-
-app.listen(PORT, () => console.log(`listening on http://localhost:${PORT}`));
-
-app.post('/message', (req, res) => {
+const postMessage = (req, res) => {
   if (!req.body.conversation_id || !req.body.message) {
     res.status(418).send({ response: 'Invalid format!' });
   }
@@ -17,11 +9,16 @@ app.post('/message', (req, res) => {
     response: '',
   };
 
-  if (message.includes('Hello') || message.includes('Hi'))
+  const arr = message.split(/([^a-zA-Z0-9])/g);
+  if (arr.includes('Hello') || arr.includes('Hi'))
     response.response = 'Welcome to StationFive.';
-  else if (message.includes('Goodbye') || message.includes('bye'))
+  else if (arr.includes('Goodbye') || arr.includes('bye'))
     response.response = 'Thank you, see you around.';
   else response.response = 'Sorry, I don’t understand.';
 
   res.send(response);
-});
+};
+
+module.exports = {
+  postMessage,
+};
